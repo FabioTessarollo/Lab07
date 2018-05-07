@@ -46,19 +46,7 @@ public class Model {
 	}
 
 	private void recursive(LinkedList<Blackout> listaBlackOut, float livelloTempo, LinkedList<Blackout> lista) {
-		for(Blackout b : lista) {
-			if(livelloTempo + Math.abs(b.getDurata().toHours()) < oreMax) {
-				listaBlackOut.add(b);
-				recursive(listaBlackOut, livelloTempo + Math.abs(b.getDurata().toHours()), lista);
-				listaBlackOut.remove(listaBlackOut.size()-1);
-			}
-			else {
-				if(numeroPersone(listaBlackOut) > best) {
-					best = numeroPersone(listaBlackOut);
-					this.parziale = new LinkedList<Blackout>(listaBlackOut);
-				}
-			}
-		}
+
 		
 	}
 	
