@@ -8,13 +8,11 @@ import it.polito.tdp.poweroutages.db.PowerOutageDAO;
 public class Model {
 
 	PowerOutageDAO podao;
-	LinkedList<Blackout> soluzione;
-	LinkedList<Blackout> parziale;
+	
 	
 	int nerc;
 	int oreMax;
 	int annoMax;
-	int best = 0;
 	
 	public Model() {
 		podao = new PowerOutageDAO();
@@ -25,24 +23,9 @@ public class Model {
 	}
 	
 	public List<Blackout> analysis(int annoMax, int oreMax, int nerc) {
-		this.parziale = null;
-		this.nerc = nerc;
-		this.oreMax = oreMax;
 		this.annoMax = annoMax;
-		this.soluzione = null;
-		float livelloTempo = 0;
-		
-		for(int i = 0; i < 15 - annoMax; i++) {
-			LinkedList<Blackout> listaBO = podao.getBlackoutNercData(2000 + i, 2000 + annoMax + i , nerc);
-			parziale = new LinkedList<Blackout>();
-			recursive(parziale, livelloTempo, listaBO);
-			if(numeroPersone(parziale) > numeroPersone(soluzione)) {
-				soluzione = new LinkedList<Blackout>(parziale);
-			}
-			listaBO.clear();
-			parziale.clear();
-		}
-		return soluzione;
+		this.oreMax = oreMax;
+		this.nerc = nerc;
 	}
 
 	private void recursive(LinkedList<Blackout> listaBlackOut, float livelloTempo, LinkedList<Blackout> lista) {
@@ -50,26 +33,5 @@ public class Model {
 		
 	}
 	
-	public int numeroPersone(LinkedList<Blackout> lista) {
-		if (lista == null)
-			return 0;
-		
-		int conteggio = 0;
-		for(Blackout b : lista) {
-			conteggio += b.getNumeroPersone();
-		}
-		return conteggio;
-	}
-	
-	public float tempoTotaleLista(LinkedList<Blackout> lista) {
-		if (lista.size() == 0)
-			return 0;
-		
-		float tot = 0;
-		for(Blackout b : lista) {
-			tot += Math.abs(b.getDurata().toHours());
-		}
-		return tot;
-	}
 
 }

@@ -40,6 +40,36 @@ public class PowerOutageDAO {
 		return nercList;
 	}
 	
+	public ArrayList<Blackout> getBlackoutNerc(int nerc){
+		
+		String sql = "SELECT poweroutages.id, poweroutages.date_event_began, poweroutages.date_event_finished, poweroutages.customers_affected\n" + 
+				"FROM poweroutages\n" + 
+				"WHERE nerc_id = ?";
+		ArrayList<Blackout> blackoutList = new ArrayList<Blackout>();
+
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, nerc);
+
+			ResultSet res = st.executeQuery();
+
+			while (res.next()) {
+				LocalDateTime t1 = res.getTimestamp("date_event_began").toLocalDateTime();
+				LocalDateTime t2 = res.getTimestamp("date_event_finished").toLocalDateTime();
+				Blackout bo = new Blackout(res.getInt("id"), Duration.between(t2, t1), res.getInt("customers_affected"), t1, t2);
+				blackoutList.add(bo);
+			}
+
+			conn.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+		return blackoutList;
+	}
+	
 	public LinkedList<Blackout> getBlackoutNercData(int inizio, int fine, int nerc) {
 
 		String sql = "SELECT poweroutages.id, poweroutages.date_event_began, poweroutages.date_event_finished, poweroutages.customers_affected\n" + 
