@@ -14,6 +14,7 @@ public class PowerOutagesController {
 	
 	private Model model;
 	private List<Nerc> nercList = new ArrayList<Nerc>();
+	private ArrayList<Blackout> blacklist;
 
 
     public void setModel(Model model) {
@@ -45,9 +46,14 @@ public class PowerOutagesController {
 
     @FXML
     void doAnalysis(ActionEvent event) {
+    	int i = 0;
+    	blacklist = new ArrayList<Blackout>(model.analysis(Integer.valueOf(fieldYears.getText()), Integer.valueOf(fieldHours.getText()), choiseBox.getValue().getId()));
+    	for(Blackout b : blacklist) {
+    		i += b.getNumeroPersone();
+    		textResult.appendText(b.toString());
+    	}
     	
-    	textResult.appendText(model.analysis(Integer.valueOf(fieldYears.getText()), Integer.valueOf(fieldHours.getText()), choiseBox.getValue().getId()).toString());
-
+    	textResult.appendText("Numero persone: " + i);
     }
 
     @FXML
